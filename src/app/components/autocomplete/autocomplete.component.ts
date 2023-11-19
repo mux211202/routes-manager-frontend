@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, NgZone, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -24,6 +24,9 @@ export interface PlaceSearchResult {
   styleUrl: './autocomplete.component.scss'
 })
 export class AutocompleteComponent {
+
+  constructor(private ngZone: NgZone) {}
+
   @ViewChild('inputField') inputField: ElementRef;
 
   @Input() placeholder = '';
@@ -44,7 +47,10 @@ export class AutocompleteComponent {
         iconUrl: place?.icon,
         imageUrl: this.getPhotoUrl(place)
       }
-      this.placeChanged.emit(result);
+      console.log(result);
+      this.ngZone.run(() => {
+        this.placeChanged.emit(result);
+      })
     })
   }
 
