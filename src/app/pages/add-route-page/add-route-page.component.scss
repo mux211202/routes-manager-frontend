@@ -1,0 +1,31 @@
+.container {
+    padding: 25px;
+}
+
+.input-area {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 5px;
+}
+
+.display-area {
+    display: flex;
+    height: calc(100vh - 200px);
+    > div {
+        width: 30%;
+        padding: 10px;
+        height: inherit;
+        overflow: hidden;
+
+        > * {
+            display: block;
+            margin-bottom: 16px;
+        }
+    }
+    
+    > app-map-display {
+        width: 70%;
+        height: inherit;
+    }
+}

@@ -1,0 +1,26 @@
+header {
+    padding: 10px 20px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+
+    > div {
+        display: flex;
+        justify-content: start;
+        align-items: end;
+        gap: 10px;
+
+        > a {
+            display: block;
+            text-decoration: none;
+            line-height: 24px;
+            text-transform: uppercase;
+            color: beige;
+
+            &:hover {
+                color: rgb(29, 174, 174);
+            }
+        }
+    }
+}
