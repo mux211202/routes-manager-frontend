@@ -7,6 +7,14 @@
     align-items: center;
     justify-content: start;
     gap: 5px;
+
+    > button {
+        text-transform: uppercase;
+
+        &.mat-warn {
+            pointer-events: none;
+        }
+    }
 }
 
 .display-area {
