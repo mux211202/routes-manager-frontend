@@ -3,58 +3,55 @@ import { CommonModule } from '@angular/common';
 import { AutocompleteComponent, PlaceSearchResult } from '../../components/autocomplete/autocomplete.component';
 import { MapDisplayComponent } from '../../components/map-display/map-display.component';
 import { PlaceDetailsCardComponent } from '../../components/place-details-card/place-details-card.component';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { routeMatrixRequest } from '../../helpers/routeMatrixRequest';
 
-const DUMP_OBJ = {
-  "origins": [
-    {
-      "waypoint": {
-        "location": {
-          "latLng": {
-            "latitude": 37.420761,
-            "longitude": -122.081356
-          }
-        }
-      },
-      "routeModifiers": { "avoid_ferries": true}
-    },
-    {
-      "waypoint": {
-        "location": {
-          "latLng": {
-            "latitude": 37.403184,
-            "longitude": -122.097371
-          }
-        }
-      },
-      "routeModifiers": { "avoid_ferries": true}
-    }
-  ],
-  "destinations": [
-    {
-      "waypoint": {
-        "location": {
-          "latLng": {
-            "latitude": 37.420999,
-            "longitude": -122.086894
-          }
+const origins = [
+  {
+    "waypoint": {
+      "location": {
+        "latLng": {
+          "latitude": 37.420761,
+          "longitude": -122.081356
         }
       }
     },
-    {
-      "waypoint": {
-        "location": {
-          "latLng": {
-            "latitude": 37.383047,
-            "longitude": -122.044651
-          }
+    "routeModifiers": { "avoid_ferries": true}
+  },
+  {
+    "waypoint": {
+      "location": {
+        "latLng": {
+          "latitude": 37.403184,
+          "longitude": -122.097371
         }
       }
     }
-  ],
-  "travelMode": "DRIVE",
-  "routingPreference": "TRAFFIC_AWARE"
-}
+  }
+];
+
+const destinations = [
+  {
+    "waypoint": {
+      "location": {
+        "latLng": {
+          "latitude": 37.420999,
+          "longitude": -122.086894
+        }
+      }
+    }
+  },
+  {
+    "waypoint": {
+      "location": {
+        "latLng": {
+          "latitude": 37.383047,
+          "longitude": -122.044651
+        }
+      }
+    }
+  }
+];
 
 @Component({
   selector: 'app-add-route-page',
@@ -101,19 +98,6 @@ export class AddRoutePageComponent {
       return;
     }
     this.notification = undefined;
-
-    const request = await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix', {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      headers: {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": "AIzaSyApgS9bmdfRrOvGT8544t1xetPRFEuYfT4",
-        "X-Goog-FieldMask": "originIndex,destinationIndex,duration,distanceMeters,status,condition"
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(DUMP_OBJ),
-    })
-
-    console.log('request sent', await request.json());
+    routeMatrixRequest(origins, destinations);
   }
 }
