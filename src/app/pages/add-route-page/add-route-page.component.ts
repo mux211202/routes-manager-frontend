@@ -5,6 +5,7 @@ import { MapDisplayComponent } from '../../components/map-display/map-display.co
 import { PlaceDetailsCardComponent } from '../../components/place-details-card/place-details-card.component';
 import { MatButtonModule } from '@angular/material/button';
 import { routeMatrixRequest } from '../../helpers/routeMatrixRequest';
+import { MyRoutesPageComponent } from '../my-routes-page/my-routes-page.component';
 
 const origins = [
   {
@@ -70,7 +71,7 @@ const destinations = [
         <app-autocomplete (placeChanged)="fromValue = $event"></app-autocomplete>
         <h2>to</h2>
         <app-autocomplete (placeChanged)="toValue = $event"></app-autocomplete>
-        <button (click)="onSave($event)" mat-raised-button color="primary">Add route</button>
+        <button (click)="addRoute($event)" mat-raised-button color="primary">Add route</button>
       </div>
       @if(this.notification) {
         <div><button mat-raised-button color="warn">{{this.notification}}</button></div>
@@ -90,14 +91,18 @@ export class AddRoutePageComponent {
   fromValue: PlaceSearchResult | undefined;
   toValue: PlaceSearchResult | undefined;
   notification: string | undefined;
+
+  constructor (private myRoutesService: MyRoutesPageComponent ){}
   
-  async onSave(event: MouseEvent): Promise<void> {
-    console.log(this.fromValue, this.toValue);
-    if (!this.fromValue?.address || !this.toValue?.address) {
+  async addRoute(event: MouseEvent): Promise<void> {
+    const {fromValue, toValue} = this;
+    if (!fromValue?.address || !toValue?.address) {
       this.notification = 'Please select starting point and destination point!';
       return;
     }
     this.notification = undefined;
-    routeMatrixRequest(origins, destinations);
+    this.myRoutesService.addRoute({fromValue, toValue})
+    
+    //routeMatrixRequest(origins, destinations);
   }
 }
