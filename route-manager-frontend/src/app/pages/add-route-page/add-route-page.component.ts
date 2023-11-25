@@ -4,8 +4,11 @@ import { AutocompleteComponent, PlaceSearchResult } from '../../components/autoc
 import { MapDisplayComponent } from '../../components/map-display/map-display.component';
 import { PlaceDetailsCardComponent } from '../../components/place-details-card/place-details-card.component';
 import { MatButtonModule } from '@angular/material/button';
-import { routeMatrixRequest } from '../../helpers/routeMatrixRequest';
-import { MyRoutesPageComponent } from '../my-routes-page/my-routes-page.component';
+import { Store } from '@ngrx/store';
+import { RouteType } from '../../store/routes-store/routes.reducer';
+import { Observable, from } from 'rxjs';
+import { addRoute } from '../../store/routes-store/routes.actions';
+import { createRouteKey } from '../../helpers/createRouteKey';
 
 const origins = [
   {
@@ -91,17 +94,21 @@ export class AddRoutePageComponent {
   fromValue: PlaceSearchResult | undefined;
   toValue: PlaceSearchResult | undefined;
   notification: string | undefined;
-
-  constructor (private myRoutesService: MyRoutesPageComponent ){}
+  constructor(private store: Store<{ routes: RouteType[] }>) {}
   
-  async addRoute(event: MouseEvent): Promise<void> {
+  addRoute(event: MouseEvent): void {
     const {fromValue, toValue} = this;
     if (!fromValue?.address || !toValue?.address) {
       this.notification = 'Please select starting point and destination point!';
       return;
     }
     this.notification = undefined;
-    this.myRoutesService.addRoute({fromValue, toValue})
+
+    if(fromValue.location && toValue.location) {
+      const route = createRouteKey({key:'',fromValue, toValue});
+
+      this.store.dispatch(addRoute({route}));
+    }
     
     //routeMatrixRequest(origins, destinations);
   }

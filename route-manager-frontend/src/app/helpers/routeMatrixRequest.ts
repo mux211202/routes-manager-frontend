@@ -28,6 +28,5 @@ export const routeMatrixRequest = async (origins: WaypointType[], destinations: 
       body: JSON.stringify(bodyObj),
     })
 
-    console.log('request sent', await request.json());
     return await request.json();
 }

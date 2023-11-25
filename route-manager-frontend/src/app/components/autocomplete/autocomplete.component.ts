@@ -35,7 +35,6 @@ export class AutocompleteComponent {
   autocomplete: google.maps.places.Autocomplete | undefined;
 
   ngAfterViewInit() {
-    console.log(google.maps.places)
     this.autocomplete = new google.maps.places.Autocomplete(this.inputField.nativeElement);
 
     this.autocomplete.addListener('place_changed', () => {
@@ -47,7 +46,6 @@ export class AutocompleteComponent {
         iconUrl: place?.icon,
         imageUrl: this.getPhotoUrl(place)
       }
-      console.log(result);
       this.ngZone.run(() => {
         this.placeChanged.emit(result);
       })
