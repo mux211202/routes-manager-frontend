@@ -7,6 +7,7 @@ import { StoreModule, provideStore } from '@ngrx/store';
 import { routesReducer } from './store/routes-store/routes.reducer';
 
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { SimpleNotificationsModule } from 'angular2-notifications';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,8 @@ export const appConfig: ApplicationConfig = {
       StoreModule.forRoot({ routes: routesReducer }),
       StoreDevtoolsModule.instrument({
         name: 'NgRx Demo App',
-      })
+      }),
+      SimpleNotificationsModule.forRoot()
     )
 ]
 };

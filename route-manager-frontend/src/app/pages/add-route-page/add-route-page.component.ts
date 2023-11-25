@@ -9,53 +9,7 @@ import { RouteType } from '../../store/routes-store/routes.reducer';
 import { Observable, from } from 'rxjs';
 import { addRoute } from '../../store/routes-store/routes.actions';
 import { createRouteKey } from '../../helpers/createRouteKey';
-
-const origins = [
-  {
-    "waypoint": {
-      "location": {
-        "latLng": {
-          "latitude": 37.420761,
-          "longitude": -122.081356
-        }
-      }
-    },
-    "routeModifiers": { "avoid_ferries": true}
-  },
-  {
-    "waypoint": {
-      "location": {
-        "latLng": {
-          "latitude": 37.403184,
-          "longitude": -122.097371
-        }
-      }
-    }
-  }
-];
-
-const destinations = [
-  {
-    "waypoint": {
-      "location": {
-        "latLng": {
-          "latitude": 37.420999,
-          "longitude": -122.086894
-        }
-      }
-    }
-  },
-  {
-    "waypoint": {
-      "location": {
-        "latLng": {
-          "latitude": 37.383047,
-          "longitude": -122.044651
-        }
-      }
-    }
-  }
-];
+import {MatTableModule} from '@angular/material/table';
 
 @Component({
   selector: 'app-add-route-page',
@@ -65,7 +19,8 @@ const destinations = [
     AutocompleteComponent,
     PlaceDetailsCardComponent,
     MapDisplayComponent,
-    MatButtonModule
+    MatButtonModule,
+    MatTableModule
   ],
   template: `
     <div class="container">
@@ -74,10 +29,10 @@ const destinations = [
         <app-autocomplete (placeChanged)="fromValue = $event"></app-autocomplete>
         <h2>to</h2>
         <app-autocomplete (placeChanged)="toValue = $event"></app-autocomplete>
-        <button (click)="addRoute($event)" mat-raised-button color="primary">Add route</button>
+        <button (click)="addRoute()" mat-raised-button color="primary">Add route</button>
       </div>
       @if(this.notification) {
-        <div><button mat-raised-button color="warn">{{this.notification}}</button></div>
+        <div><button mat-raised-button color={{this.notification.status}}>{{this.notification.message}}</button></div>
       }
       <div class="display-area"> 
         <div>
@@ -93,21 +48,38 @@ const destinations = [
 export class AddRoutePageComponent {
   fromValue: PlaceSearchResult | undefined;
   toValue: PlaceSearchResult | undefined;
-  notification: string | undefined;
-  constructor(private store: Store<{ routes: RouteType[] }>) {}
+  notification: {message: string, status: 'warn' | 'accent'} | undefined;
+  routes: RouteType[] | undefined;
+  constructor(private store: Store<{ routes: RouteType[] }>) {
+    this.store.select('routes').subscribe(res => {
+      this.routes = res;
+    });
+  }
   
-  addRoute(event: MouseEvent): void {
+  addRoute(): void {
     const {fromValue, toValue} = this;
+
     if (!fromValue?.address || !toValue?.address) {
-      this.notification = 'Please select starting point and destination point!';
+      this.notification = {message: 'Please select starting point and destination point!', status: 'warn'};
       return;
     }
+
+    const route = createRouteKey({key:'',fromValue, toValue});
+    if(!!this.routes?.find(storeRoute=>route.key===storeRoute.key)){
+      this.notification = {message: 'This route already exists!', status: 'warn'};;
+      return;
+    }
+
     this.notification = undefined;
 
     if(fromValue.location && toValue.location) {
-      const route = createRouteKey({key:'',fromValue, toValue});
-
       this.store.dispatch(addRoute({route}));
+      const message = 'This you have added the route!';
+      this.notification = {message, status: 'accent'};
+      setTimeout(()=>{
+        // checking if notification did not change
+        if(this.notification?.message === message) this.notification = undefined;
+      }, 3000)
     }
     
     //routeMatrixRequest(origins, destinations);

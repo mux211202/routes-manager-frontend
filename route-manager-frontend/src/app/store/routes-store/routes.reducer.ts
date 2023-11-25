@@ -14,5 +14,5 @@ export const routesReducer = createReducer(
   initialState,
   on(addRoute, (state, { route }) => {
     return state.concat(route);
-  } ),
+  }),
 );
