@@ -8,7 +8,6 @@ public class RouteManagerBackendApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(RouteManagerBackendApplication.class, args);
-
     }
 
 }

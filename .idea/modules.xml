@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/route-manager-frontend/.idea/route-manager.iml" filepath="$PROJECT_DIR$/route-manager-frontend/.idea/route-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/route-manager-backend-.main.iml" filepath="$PROJECT_DIR$/.idea/modules/route-manager-backend-.main.iml" />
     </modules>
   </component>
 </project>
