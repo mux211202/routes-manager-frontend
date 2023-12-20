@@ -39,7 +39,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse login(AuthenticationRequest request) {
         manager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

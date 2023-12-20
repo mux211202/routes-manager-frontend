@@ -9,6 +9,7 @@ import { authReducer } from './store/auth-store/auth.reducer';
 
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import {HttpClientModule, provideHttpClient} from "@angular/common/http";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +21,8 @@ export const appConfig: ApplicationConfig = {
       StoreDevtoolsModule.instrument({
         name: 'NgRx Demo App',
       }),
-      SimpleNotificationsModule.forRoot()
-    )
+      SimpleNotificationsModule.forRoot(),
+      HttpClientModule
+    ),
 ]
 };
