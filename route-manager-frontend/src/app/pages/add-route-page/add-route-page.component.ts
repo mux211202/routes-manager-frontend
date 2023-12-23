@@ -81,6 +81,6 @@ export class AddRoutePageComponent {
       }, 3000)
     }
 
-    //routeMatrixRequest(origins, destinations);
+    //routeMatrix(origins, destinations);
   }
 }
