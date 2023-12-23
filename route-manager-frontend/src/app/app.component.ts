@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import {isLoggedIn} from "./helpers/isLoggedIn";
+import {setAccount} from "./store/auth-store/auth.actions";
+import {Store} from "@ngrx/store";
 
 @Component({
   selector: 'app-root',
@@ -21,5 +24,16 @@ import { SimpleNotificationsModule } from 'angular2-notifications';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title: 'routes-manager-frontend';
+  title: 'routes-manager';
+
+  constructor(private store: Store) {
+  }
+
+  ngOnInit() {
+    const email = isLoggedIn();
+
+    if(email) {
+      this.store.dispatch(setAccount({email}))
+    }
+  }
 }

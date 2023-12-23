@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouteType } from '../../store/routes-store/routes.reducer';
 import { Store } from '@ngrx/store';
 import {MyAccountFormComponent} from "../../components/my-account-form/my-account-form.component";
+import {AccountType} from "../../store/auth-store/auth.reducer";
 
 @Component({
   selector: 'app-my-account-page',
@@ -12,15 +12,20 @@ import {MyAccountFormComponent} from "../../components/my-account-form/my-accoun
     MyAccountFormComponent,
   ],
   template: `
-    <my-account-form></my-account-form>
+    @if(account?.email) {
+        <h1>{{account.email}}</h1>
+    } @else {
+        <my-account-form></my-account-form>
+    }
   `,
   styleUrl: './my-account-page.component.scss',
 })
 export class MyAccountPageComponent {
-  routes: RouteType[] | undefined;
-  displayedColumns: string[] = ['from', 'to'];
-
-  constructor(private store: Store<{ routes: RouteType[] }>) {
-
+  account: AccountType
+  constructor(private store: Store<{ auth: {account: AccountType} }>) {
+    this.store.select('auth').subscribe(res => {
+      console.log(res)
+      this.account = res.account;
+    });
   }
 }

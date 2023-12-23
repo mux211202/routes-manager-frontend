@@ -3,7 +3,6 @@ import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import {setAccount} from "../../store/auth-store/auth.actions";
 import {Store} from "@ngrx/store";
-import {RouteType} from "../../store/routes-store/routes.reducer";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ import {RouteType} from "../../store/routes-store/routes.reducer";
 export class MyAccountFormService {
 
   constructor(private http: HttpClient,
-              private store: Store<{ routes: RouteType[] }>) { }
+              private store: Store) { }
 
   register(userData: any): void
   {
@@ -25,7 +24,8 @@ export class MyAccountFormService {
         localStorage.setItem('jwtToken', token);
         const helper = new JwtHelperService();
 
-        const user = helper.decodeToken(token);
+        const { sub } = helper.decodeToken(token);
+        const user = {email: sub}
 
         this.store.dispatch(setAccount(user))
         console.log(user);
@@ -47,7 +47,8 @@ export class MyAccountFormService {
         localStorage.setItem('jwtToken', token);
         const helper = new JwtHelperService();
 
-        const user = helper.decodeToken(token);
+        const { sub } = helper.decodeToken(token);
+        const user = {email: sub}
 
         this.store.dispatch(setAccount(user))
         console.log(user);
