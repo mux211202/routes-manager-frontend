@@ -6,6 +6,8 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import {MatTabsModule} from "@angular/material/tabs";
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MyAccountFormService} from "./my-account-form-service";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'my-account-form',
@@ -18,9 +20,11 @@ import {MyAccountFormService} from "./my-account-form-service";
     RouterLinkActive,
     MatTabsModule,
     ReactiveFormsModule,
+    MatInputModule,
+    MatButtonModule
   ],
   template: `
-    <div>
+    <div class="form-container">
       <mat-tab-group>
         <mat-tab label="Login">
           <ng-template mat-tab-label>
@@ -28,16 +32,13 @@ import {MyAccountFormService} from "./my-account-form-service";
             <span class="primary-color">Login</span>
           </ng-template>
           <form [formGroup]="form" (submit)="submitForm($event)">
-            <div>
-              <label for="email">Email:</label>
-              <input type="text" id="email" name="email" required formControlName="email">
+            <div class="inputs">
+                <label for="email">Email:</label>
+                <input class="form-input" matInput  type="text" id="email" name="email" required formControlName="email">
+                <label for="password">Password:</label>
+                <input class="form-input" matInput type="password" id="password" name="password" required formControlName="password">
             </div>
-            <div>
-              <label for="password">Password:</label>
-              <input type="password" id="password" name="password" required formControlName="password">
-            </div>
-
-            <button type="submit">Login</button>
+            <button mat-raised-button type="submit">Login</button>
           </form>
         </mat-tab>
 
@@ -47,24 +48,17 @@ import {MyAccountFormService} from "./my-account-form-service";
             <span class="primary-color">Register</span>
           </ng-template>
           <form [formGroup]="form" (submit)="submitForm($event)">
-            <div>
+            <div class="inputs">
               <label for="firstname">Firstname:</label>
-              <input type="text" id="firstname" name="firstname" required formControlName="firstname">
-            </div>
-            <div>
+              <input class="form-input" matInput type="text" id="firstname" name="firstname" required formControlName="firstname">
               <label for="secondname">Second name:</label>
-              <input type="text" id="secondname" name="secondname" required formControlName="secondname">
-            </div>
-            <div>
+              <input class="form-input" matInput type="text" id="secondname" name="secondname" required formControlName="secondname">
               <label for="email">Email:</label>
-              <input type="email" id="email" name="email" required formControlName="email">
-            </div>
-            <div>
+              <input class="form-input" matInput type="email" id="email" name="email" required formControlName="email">
               <label for="password">Password:</label>
-              <input type="password" id="password" name="password" required formControlName="password">
+              <input class="form-input" matInput type="password" id="password" name="password" required formControlName="password">
             </div>
-
-            <button type="submit">Register</button>
+            <button mat-raised-button type="submit">Register</button>
           </form>
         </mat-tab>
       </mat-tab-group>

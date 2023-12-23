@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { setAccount } from './auth.actions';
+import {logOut, setAccount} from './auth.actions';
 
 export interface AccountType {
     email: string,
@@ -22,6 +22,13 @@ export const authReducer = createReducer(
     return {
         ...state,
         account
+    }
+  }),
+  on(logOut, (state) => {
+    console.log('logging out')
+    localStorage.setItem('jwtToken', '')
+    return {
+      ...initialState
     }
   }),
 );

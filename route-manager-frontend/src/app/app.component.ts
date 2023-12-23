@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import {isLoggedIn} from "./helpers/isLoggedIn";
-import {setAccount} from "./store/auth-store/auth.actions";
+import {logOut, setAccount} from "./store/auth-store/auth.actions";
 import {Store} from "@ngrx/store";
 
 @Component({
@@ -34,6 +34,8 @@ export class AppComponent {
 
     if(email) {
       this.store.dispatch(setAccount({email}))
+    } else {
+      this.store.dispatch(logOut())
     }
   }
 }
