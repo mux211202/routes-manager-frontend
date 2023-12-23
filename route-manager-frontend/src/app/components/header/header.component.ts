@@ -9,14 +9,14 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule,
-    MatToolbarModule, 
-    MatIconModule, 
-    RouterLink, 
+    MatToolbarModule,
+    MatIconModule,
+    RouterLink,
     RouterLinkActive
   ],
   template: `
     <mat-toolbar color="primary">
-      <header> 
+      <header>
         <div>
           <a routerLink="/"  routerLinkActive="active" ariaCurrentWhenActive="page">
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
@@ -25,7 +25,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
           <a routerLink="/my-routes" ariaCurrentWhenActive="page" routerLinkActive="active">My routes</a>
         </div>
         <div>
-          <a routerLink="/my_account" ariaCurrentWhenActive="page" routerLinkActive="active">
+          <a routerLink="/my-account" ariaCurrentWhenActive="page" routerLinkActive="active">
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="account_box"></mat-icon>
           </a>
         </div>

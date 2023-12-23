@@ -6,7 +6,6 @@ import { PlaceDetailsCardComponent } from '../../components/place-details-card/p
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { RouteType } from '../../store/routes-store/routes.reducer';
-import { Observable, from } from 'rxjs';
 import { addRoute } from '../../store/routes-store/routes.actions';
 import { createRouteKey } from '../../helpers/createRouteKey';
 import {MatTableModule} from '@angular/material/table';
@@ -15,7 +14,7 @@ import {MatTableModule} from '@angular/material/table';
   selector: 'app-add-route-page',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     AutocompleteComponent,
     PlaceDetailsCardComponent,
     MapDisplayComponent,
@@ -24,7 +23,7 @@ import {MatTableModule} from '@angular/material/table';
   ],
   template: `
     <div class="container">
-      <div class="input-area"> 
+      <div class="input-area">
         <h2>I want to go from</h2>
         <app-autocomplete (placeChanged)="fromValue = $event"></app-autocomplete>
         <h2>to</h2>
@@ -34,7 +33,7 @@ import {MatTableModule} from '@angular/material/table';
       @if(this.notification) {
         <div><button mat-raised-button color={{this.notification.status}}>{{this.notification.message}}</button></div>
       }
-      <div class="display-area"> 
+      <div class="display-area">
         <div>
         <app-place-details-card [data]="fromValue"></app-place-details-card>
         <app-place-details-card [data]="toValue"></app-place-details-card>
@@ -55,7 +54,7 @@ export class AddRoutePageComponent {
       this.routes = res;
     });
   }
-  
+
   addRoute(): void {
     const {fromValue, toValue} = this;
 
@@ -81,7 +80,7 @@ export class AddRoutePageComponent {
         if(this.notification?.message === message) this.notification = undefined;
       }, 3000)
     }
-    
+
     //routeMatrixRequest(origins, destinations);
   }
 }
