@@ -1,5 +1,6 @@
 package com.melihovs.routemanagerbackend.entity;
 
+import com.melihovs.routemanagerbackend.entity.routes.RouteType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -31,6 +33,14 @@ public class User implements UserDetails {
     private String email;
 
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_routeTypes",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "routeType_id")
+    )
+    private Set<RouteType> savedRouteTypes;
 
     @Enumerated
     private Role role;
