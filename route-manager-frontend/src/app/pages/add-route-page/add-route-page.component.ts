@@ -24,9 +24,9 @@ import {MatTableModule} from '@angular/material/table';
   template: `
     <div class="container">
       <div class="input-area">
-        <h2>I want to go from</h2>
+        <h2>Warehouse location: </h2>
         <app-autocomplete (placeChanged)="fromValue = $event"></app-autocomplete>
-        <h2>to</h2>
+        <h2>Destination point: </h2>
         <app-autocomplete (placeChanged)="toValue = $event"></app-autocomplete>
         <button (click)="addRoute()" mat-raised-button color="primary">Add route</button>
       </div>

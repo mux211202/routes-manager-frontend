@@ -1,20 +1,18 @@
 import {RouteType} from "../store/routes-store/routes.reducer";
-import {Route} from "@angular/router";
 
 export interface WaypointType {
-    waypoint:{
-        location: {
-            latLng: {
-                latitude: number,
-                longitude: number,
-            }
+    location: {
+        latLng: {
+            latitude: number,
+            longitude: number,
         }
     }
 }
 
 export interface parserReturnType {
-  origins: WaypointType[],
-  destinations: WaypointType[]
+  origin: WaypointType,
+  destination: WaypointType,
+  intermediates: WaypointType[]
 }
 
 const setNecessaryFields = (routes: RouteType[], side: 'fromValue' | 'toValue') => {
@@ -23,12 +21,10 @@ const setNecessaryFields = (routes: RouteType[], side: 'fromValue' | 'toValue') 
     const longitude = route[side].location?.lng();
     if(latitude && longitude) {
       const waypoint: WaypointType = {
-        waypoint: {
-          location: {
-            latLng: {
-              latitude,
-              longitude
-            }
+        location: {
+          latLng: {
+            latitude,
+            longitude
           }
         }
       }
@@ -38,37 +34,48 @@ const setNecessaryFields = (routes: RouteType[], side: 'fromValue' | 'toValue') 
     }
   });
 }
-export const parseRoutesForRouteMatrix = (routes: RouteType[] | any): parserReturnType | undefined => {
+export const parseRouteForPlanning = (routes: RouteType[] | any): parserReturnType | undefined => {
   if(routes.length < 2) {
     return undefined
   }
 
-  const origins: WaypointType[] = setNecessaryFields(routes, 'fromValue');
-  const destinations: WaypointType[] = setNecessaryFields(routes, 'toValue');
+  const origin = setNecessaryFields([routes[0]], 'fromValue')[0];
+  const intermediates: WaypointType[] = setNecessaryFields(routes, 'toValue');
 
   return {
-    origins,
-    destinations,
+    origin,
+    destination: origin,
+    intermediates: [...intermediates]
   };
 }
 
-export const routeMatrixRequest = async (origins: WaypointType[], destinations: WaypointType[]) => {
+export const routeMatrixRequest = async (route: parserReturnType) => {
     const bodyObj = {
-        origins,
-        destinations,
+        ...route,
         "travelMode": "DRIVE",
-        "routingPreference": "TRAFFIC_AWARE"
+        "optimizeWaypointOrder": "true"
     }
-    const response = await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix', {
+    const response = await fetch('https://routes.googleapis.com/directions/v2:computeRoutes', {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
       cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
       headers: {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": "AIzaSyApgS9bmdfRrOvGT8544t1xetPRFEuYfT4",
-        "X-Goog-FieldMask": "originIndex,destinationIndex,duration,distanceMeters,status,condition"
-        // 'Content-Type': 'application/x-www-form-urlencoded',
+        "X-Goog-FieldMask": "routes.optimizedIntermediateWaypointIndex"
       },
       body: JSON.stringify(bodyObj),
     })
     return await response.json();
+}
+
+export const routesPlannerResult = (plan: any, routes: RouteType[] | any): RouteType[] => {
+  const result: RouteType[] = [];
+  console.log(plan);
+  if(plan.length !== routes.length) return [];
+  plan.forEach((number: any) => {
+    const route = routes[number];
+    if(route) result.push(route)
+  });
+  console.log(result)
+  return result;
 }
