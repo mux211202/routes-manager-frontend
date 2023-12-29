@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from '@angular/material/icon';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +18,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     <mat-toolbar color="primary">
       <header>
         <div>
-          <a routerLink="/"  routerLinkActive="active" ariaCurrentWhenActive="page">
+          <a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
           </a>
           <a routerLink="/add-route" ariaCurrentWhenActive="page" routerLinkActive="active">Add new route</a>

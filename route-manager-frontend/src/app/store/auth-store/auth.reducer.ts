@@ -18,14 +18,12 @@ export const initialState: { account: AccountType } = {
 export const authReducer = createReducer(
   initialState,
   on(setAccount, (state,  account) => {
-    console.log('setAccount')
     return {
         ...state,
         account
     }
   }),
   on(logOut, (state) => {
-    console.log('logging out')
     localStorage.setItem('jwtToken', '')
     return {
       ...initialState
