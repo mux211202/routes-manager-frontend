@@ -1,24 +1,24 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PlaceSearchResult } from '../autocomplete/autocomplete.component';
+import {Component, Input, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {PlaceSearchResult} from '../autocomplete/autocomplete.component';
 import {
   GoogleMap,
   GoogleMapsModule,
   MapDirectionsService,
 } from '@angular/google-maps';
-import { map } from 'rxjs';
+import {map} from 'rxjs';
 
 @Component({
   selector: 'app-map-display',
   standalone: true,
   imports: [CommonModule, GoogleMapsModule],
-  template:`
+  template: `
     <google-map #map [center]="this.rigaLocation" [zoom]="zoom" width="100%" height="100%">
-      @if(directionsResult) {
+      @if (directionsResult) {
         <map-directions-renderer [directions]="directionsResult"></map-directions-renderer>
       }
-      @if(markerPosition) {
-          <map-marker [position]="markerPosition"></map-marker>
+      @if (markerPosition) {
+        <map-marker [position]="markerPosition"></map-marker>
       }
     </google-map>
   `,
@@ -26,8 +26,8 @@ import { map } from 'rxjs';
 })
 export class MapDisplayComponent {
   @Input() from: PlaceSearchResult | undefined;
-  @Input() to:  PlaceSearchResult | undefined;
-  @ViewChild('map', { static: true }) map: GoogleMap;
+  @Input() to: PlaceSearchResult | undefined;
+  @ViewChild('map', {static: true}) map: GoogleMap;
 
   zoom = 10;
 
@@ -40,17 +40,18 @@ export class MapDisplayComponent {
 
   markerPosition: google.maps.LatLng | undefined;
 
-  constructor (private directionsService: MapDirectionsService ){}
+  constructor(private directionsService: MapDirectionsService) {
+  }
 
   ngOnChanges() {
     const fromLocation = this.from?.location;
     const toLocation = this.to?.location;
 
-    if(fromLocation && toLocation) {
+    if (fromLocation && toLocation) {
       this.getDirections(fromLocation, toLocation);
-    } else if(fromLocation && !toLocation) {
+    } else if (fromLocation && !toLocation) {
       this.goToLocation(fromLocation);
-    } else if(!fromLocation && toLocation) {
+    } else if (!fromLocation && toLocation) {
       this.goToLocation(toLocation);
     }
   }
@@ -62,7 +63,7 @@ export class MapDisplayComponent {
     this.directionsResult = undefined;
   }
 
-  getDirections(from: google.maps.LatLng, to: google.maps.LatLng, ) {
+  getDirections(from: google.maps.LatLng, to: google.maps.LatLng,) {
     const request: google.maps.DirectionsRequest = {
       origin: from,
       destination: to,
@@ -71,7 +72,7 @@ export class MapDisplayComponent {
 
     this.directionsService.route(request).pipe(
       map(res => res.result)
-    ).subscribe( result => {
+    ).subscribe(result => {
       this.directionsResult = result;
       this.markerPosition = undefined;
     })

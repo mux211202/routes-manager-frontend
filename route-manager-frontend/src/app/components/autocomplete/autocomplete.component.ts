@@ -1,8 +1,8 @@
-import { Component, ElementRef, EventEmitter, NgZone, Output, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { Input } from '@angular/core';
+import {Component, ElementRef, EventEmitter, NgZone, Output, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {Input} from '@angular/core';
 
 export interface PlaceSearchResult {
   address: string;
@@ -25,7 +25,8 @@ export interface PlaceSearchResult {
 })
 export class AutocompleteComponent {
 
-  constructor(private ngZone: NgZone) {}
+  constructor(private ngZone: NgZone) {
+  }
 
   @ViewChild('inputField') inputField: ElementRef;
 
@@ -53,6 +54,6 @@ export class AutocompleteComponent {
   }
 
   getPhotoUrl(place: google.maps.places.PlaceResult | undefined): string | undefined {
-    return place?.photos && place.photos?.length > 0 ? place?.photos[0].getUrl({ maxWidth: 500 }) : undefined;
+    return place?.photos && place.photos?.length > 0 ? place?.photos[0].getUrl({maxWidth: 500}) : undefined;
   }
 }
