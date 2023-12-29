@@ -10,4 +10,5 @@ public interface CoordinatesRepository extends JpaRepository<Coordinates, Long> 
 
     @Override
     Optional<Coordinates> findById(@NonNull Long aLong);
+
 }

@@ -1,13 +1,11 @@
 package com.melihovs.routemanagerbackend.entity.routes;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.melihovs.routemanagerbackend.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Set;
 
@@ -20,8 +18,8 @@ import java.util.Set;
 public class RouteType {
 
     @Id
-    @GeneratedValue(generator = "uuid2", strategy = GenerationType.UUID)
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+//    @GeneratedValue(generator = "uuid2", strategy = GenerationType.UUID)
+//    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
 
     @ManyToMany(mappedBy = "savedRouteTypes")
