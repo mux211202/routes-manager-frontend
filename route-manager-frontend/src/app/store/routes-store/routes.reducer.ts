@@ -5,7 +5,8 @@ import { PlaceSearchResult } from '../../components/autocomplete/autocomplete.co
 export interface RouteType {
   key: string,
   toValue: PlaceSearchResult,
-  fromValue: PlaceSearchResult
+  fromValue: PlaceSearchResult,
+  position?: number
 }
 
 export const initialState: RouteType[] = [];

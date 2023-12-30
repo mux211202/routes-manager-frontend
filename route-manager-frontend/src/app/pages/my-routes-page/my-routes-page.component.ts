@@ -19,6 +19,7 @@ import {
   MatDialogTitle
 } from '@angular/material/dialog';
 import {hasSameOrigin} from "../../helpers/hasSameOrigin";
+import {routes} from "../../app.routes";
 
 @Component({
   selector: 'app-my-routes-page',
@@ -48,7 +49,7 @@ import {hasSameOrigin} from "../../helpers/hasSameOrigin";
           </td>
         </ng-container>
 
-        <!-- Name Column -->
+        <!-- To Column -->
         <ng-container matColumnDef="to">
           <th mat-header-cell *matHeaderCellDef> To</th>
           <td mat-cell *matCellDef="let element">
@@ -83,7 +84,20 @@ export class MyRoutesPageComponent {
 
   constructor(private store: Store<{ routes: RouteType[] }>, public dialog: MatDialog) {
     this.store.select('routes').subscribe(res => {
-      this.routes = res;
+      const resCopy = [...res];
+      resCopy.sort((route1: RouteType, route2: RouteType) => {
+        const address1 = route1.fromValue.address.toLowerCase();
+        const address2 = route2.fromValue.address.toLowerCase();
+
+        if (address1 < address2) {
+          return -1;
+        } else if (address1 > address2) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      this.routes = resCopy;
     });
   }
 
@@ -91,8 +105,15 @@ export class MyRoutesPageComponent {
   protected plannedRoutes: RouteType[] = [];
 
   openDialog() {
+    const newRoutes = this.plannedRoutes.map((route, index) => {
+      return { ...route, position: index + 1 };
+    });
+
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
-      data: {routes: this.plannedRoutes, orders: [1, 2], name: 'jhksd'},
+      data: {
+        routes: newRoutes,
+        orders: [1, 2],
+      },
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -146,6 +167,11 @@ export class MyRoutesPageComponent {
   template: `
     <h2>The most effective route sequence: </h2>
     <table mat-table [dataSource]="data.routes" class="mat-elevation-z8">
+      <!-- Position Column -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef> No.</th>
+        <td mat-cell *matCellDef="let element"> {{ element.position }}</td>
+      </ng-container>
 
       <!-- From Column -->
       <ng-container matColumnDef="from">
@@ -181,7 +207,7 @@ export class MyRoutesPageComponent {
   ],
 })
 export class DialogOverviewExampleDialog {
-  displayedColumns: string[] = ['from', 'to'];
+  displayedColumns: string[] = ['position', 'from', 'to'];
 
   constructor(
     public dialogRef: MatDialogRef<DialogOverviewExampleDialog>,
