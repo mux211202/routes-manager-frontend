@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface PlaceSearchResultRepository extends JpaRepository<PlaceSearchResult, Long> {
 
     Optional<PlaceSearchResult> findPlaceSearchResultById(@NonNull Long id);
+
+    Optional<PlaceSearchResult> findPlaceSearchResultByCoordinates_LatAndCoordinates_Lng(double coordinates_lat, double coordinates_lng);
+
 }
