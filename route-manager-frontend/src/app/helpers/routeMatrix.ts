@@ -15,10 +15,10 @@ export interface parserReturnType {
   intermediates: WaypointType[]
 }
 
-const setNecessaryFields = (routes: RouteType[], side: 'fromValue' | 'toValue') => {
+const setNecessaryFields = (routes: any[], side: 'fromValue' | 'toValue') => {
   return routes.map(route => {
-    const latitude = route[side].location?.lat();
-    const longitude = route[side].location?.lng();
+    const latitude = route[side].location?.lat;
+    const longitude = route[side].location?.lng;
     if (latitude && longitude) {
       const waypoint: WaypointType = {
         location: {

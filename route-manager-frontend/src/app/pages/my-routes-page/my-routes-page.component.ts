@@ -20,6 +20,9 @@ import {
 } from '@angular/material/dialog';
 import {hasSameOrigin} from "../../helpers/hasSameOrigin";
 import {routes} from "../../app.routes";
+import {environment} from "../../../environments/environment";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {parseRoutesForFrontend} from "../../helpers/parseRoutesForRequest";
 
 @Component({
   selector: 'app-my-routes-page',
@@ -63,7 +66,7 @@ import {routes} from "../../app.routes";
       </table>
       <button (click)="planRoutes()" mat-raised-button> See the most effective routes</button>
       <button mat-raised-button>
-        <a routerLink="/add-route" ariaCurrentWhenActive="page" routerLinkActive="active">Add new route</a>
+        <a routerLink="/" ariaCurrentWhenActive="page" routerLinkActive="active">Add new route</a>
       </button>
       @if (this.notification) {
         <div>
@@ -82,23 +85,40 @@ export class MyRoutesPageComponent {
   displayedColumns: string[] = ['from', 'to'];
   notification: { message: string, status: 'warn' | 'accent' } | undefined;
 
-  constructor(private store: Store<{ routes: RouteType[] }>, public dialog: MatDialog) {
-    this.store.select('routes').subscribe(res => {
-      const resCopy = [...res];
-      resCopy.sort((route1: RouteType, route2: RouteType) => {
-        const address1 = route1.fromValue.address.toLowerCase();
-        const address2 = route2.fromValue.address.toLowerCase();
+  constructor(private store: Store<{ routes: RouteType[] }>,
+              public dialog: MatDialog,
+              private http: HttpClient) {
 
-        if (address1 < address2) {
-          return -1;
-        } else if (address1 > address2) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      this.routes = resCopy;
-    });
+    // Fetch authentication token from local storage
+    const authToken = localStorage.getItem('jwtToken');
+
+    // Set up headers with Authorization token
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${authToken}`);
+    this.http.get<{routeTypes: RouteType[]}>(`${environment.apiUrl}/api/v1/route/get-routes`, { headers }).subscribe(
+      (res: {routeTypes: RouteType[]}) => {
+        console.log(res);
+        const resCopy = parseRoutesForFrontend([...res.routeTypes]);
+        console.log(resCopy)
+        resCopy.sort((route1: RouteType, route2: RouteType) => {
+          const address1 = route1.fromValue.address.toLowerCase();
+          const address2 = route2.fromValue.address.toLowerCase();
+
+          if (address1 < address2) {
+            return -1;
+          } else if (address1 > address2) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+
+        this.routes = resCopy;
+      },
+      (error) => {
+        console.error('Error fetching routes:', error);
+        // Handle error appropriately (e.g., show a notification to the user)
+      }
+    );
   }
 
   protected selectedRoutes: string[] = [];

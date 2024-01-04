@@ -6,8 +6,8 @@ export const hasSameOrigin = (selectedRoutes: string[], routes: RouteType[] | an
   selectedRoutes.forEach(selectedRoute => {
     const route = routes.find((route: any) => route.key === selectedRoute);
     if (route?.fromValue.location) {
-      const originLocationKey = route.fromValue.location.lng().toString()
-        + route.fromValue.location.lat()?.toString();
+      const originLocationKey = route.fromValue.location.lng.toString()
+        + route.fromValue.location.lat?.toString();
       if (resultObj[originLocationKey]) resultObj[originLocationKey] += 1
       else resultObj[originLocationKey] = 1
     }

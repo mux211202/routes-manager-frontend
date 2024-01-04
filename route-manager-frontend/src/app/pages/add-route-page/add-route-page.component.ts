@@ -9,6 +9,7 @@ import {RouteType} from '../../store/routes-store/routes.reducer';
 import {addRoute} from '../../store/routes-store/routes.actions';
 import {createRouteKey} from '../../helpers/createRouteKey';
 import {MatTableModule} from '@angular/material/table';
+import {AddRoutePageService} from "./add-route-page-service";
 
 @Component({
   selector: 'app-add-route-page',
@@ -52,13 +53,13 @@ export class AddRoutePageComponent {
   notification: { message: string, status: 'warn' | 'accent' } | undefined;
   routes: RouteType[] | undefined;
 
-  constructor(private store: Store<{ routes: RouteType[] }>) {
+  constructor(private store: Store<{ routes: RouteType[] }>, private service: AddRoutePageService) {
     this.store.select('routes').subscribe(res => {
       this.routes = res;
     });
   }
 
-  addRoute(): void {
+  async addRoute(): Promise<void> {
     const {fromValue, toValue} = this;
 
     if (!fromValue?.address || !toValue?.address) {
@@ -75,7 +76,8 @@ export class AddRoutePageComponent {
     this.notification = undefined;
 
     if (fromValue.location && toValue.location) {
-      this.store.dispatch(addRoute({route}));
+      await this.service.addRoute(route)
+      // this.store.dispatch(addRoute({route}));
       const message = 'This you have added the route!';
       this.notification = {message, status: 'accent'};
       setTimeout(() => {

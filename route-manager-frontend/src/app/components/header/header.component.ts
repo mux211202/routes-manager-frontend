@@ -21,7 +21,6 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
           <a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
           </a>
-          <a routerLink="/add-route" ariaCurrentWhenActive="page" routerLinkActive="active">Add new route</a>
           <a routerLink="/my-routes" ariaCurrentWhenActive="page" routerLinkActive="active">My routes</a>
         </div>
         <div>
