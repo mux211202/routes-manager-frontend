@@ -23,7 +23,9 @@ public class PlaceSearchResult {
 
     private String address;
     private String name;
+    @Lob
     private String imageUrl;
+    @Lob
     private String iconUrl;
 
     @OneToOne(mappedBy = "toValue")
