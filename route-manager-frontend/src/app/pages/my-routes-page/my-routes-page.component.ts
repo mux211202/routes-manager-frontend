@@ -23,6 +23,9 @@ import {routes} from "../../app.routes";
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {parseRoutesForFrontend} from "../../helpers/parseRoutesForRequest";
+import {AccountType} from "../../store/auth-store/auth.reducer";
+import {MyAccountFormComponent} from "../../components/my-account-form/my-account-form.component";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'app-my-routes-page',
@@ -36,58 +39,68 @@ import {parseRoutesForFrontend} from "../../helpers/parseRoutesForRequest";
     MatTableModule,
     RouterLink,
     RouterLinkActive,
-    MatDialogModule
+    MatDialogModule,
+    MyAccountFormComponent,
+    MatIconModule
   ],
   template: `
-    @if (this.routes) {
-      <table mat-table [dataSource]="routes" class="mat-elevation-z8">
-
-        <!-- From Column -->
-        <ng-container matColumnDef="from">
-          <th mat-header-cell *matHeaderCellDef> From</th>
-          <td mat-cell *matCellDef="let element">
-            <input (click)="onCheckboxClick($event)" [attr.data-id]="element.key" type="checkbox"/>
-            <img [src]="element.fromValue.iconUrl" mat-card-avatar/>
-            <span>{{ element.fromValue.address }}</span>
-          </td>
-        </ng-container>
-
-        <!-- To Column -->
-        <ng-container matColumnDef="to">
-          <th mat-header-cell *matHeaderCellDef> To</th>
-          <td mat-cell *matCellDef="let element">
-            <img [src]="element.toValue.iconUrl" mat-card-avatar/>
-            <span>{{ element.toValue.address }}</span>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <button (click)="planRoutes()" mat-raised-button> See the most effective routes</button>
-      <button mat-raised-button>
-        <a routerLink="/" ariaCurrentWhenActive="page" routerLinkActive="active">Add new route</a>
-      </button>
-      @if (this.notification) {
-        <div>
-          <button mat-raised-button color={{this.notification.status}}>{{ this.notification.message }}</button>
-        </div>
-      }
-
+    @if (!account?.email) {
+      <main class="pleaseLogIn">
+        <h1>To use service, you need to log in</h1>
+        <a routerLink="/my-account" ariaCurrentWhenActive="page" routerLinkActive="active">LOG IN</a>
+      </main>
     } @else {
-      <h2>There are no routes</h2>
+      @if (this.routes) {
+        <table mat-table [dataSource]="routes" class="mat-elevation-z8">
+
+          <!-- From Column -->
+          <ng-container matColumnDef="from">
+            <th mat-header-cell *matHeaderCellDef> From</th>
+            <td mat-cell *matCellDef="let element">
+              <input (click)="onCheckboxClick($event)" [attr.data-id]="element.key" type="checkbox"/>
+              <img [src]="element.fromValue.iconUrl" mat-card-avatar/>
+              <span>{{ element.fromValue.address }}</span>
+            </td>
+          </ng-container>
+
+          <!-- To Column -->
+          <ng-container matColumnDef="to">
+            <th mat-header-cell *matHeaderCellDef> To</th>
+            <td mat-cell *matCellDef="let element">
+              <img [src]="element.toValue.iconUrl" mat-card-avatar/>
+              <span>{{ element.toValue.address }}</span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <button (click)="planRoutes()" mat-raised-button> See the most effective routes</button>
+        <button mat-raised-button>
+          <a routerLink="/" ariaCurrentWhenActive="page" routerLinkActive="active">Add new route</a>
+        </button>
+        @if (this.notification) {
+          <div>
+            <button mat-raised-button color={{this.notification.status}}>{{ this.notification.message }}</button>
+          </div>
+        }
+
+      } @else {
+        <h2>There are no routes</h2>
+      }
     }
   `,
-  styleUrl: './my-routes-page.component.scss',
+  styleUrls: ['../../app.component.scss', './my-routes-page.component.scss'],
 })
 export class MyRoutesPageComponent {
   routes: RouteType[] | undefined;
   displayedColumns: string[] = ['from', 'to'];
   notification: { message: string, status: 'warn' | 'accent' } | undefined;
+  account: AccountType | undefined;
 
-  constructor(private store: Store<{ routes: RouteType[] }>,
+  constructor(private store: Store<{ routes: RouteType[], auth: { account: AccountType  }}>,
               public dialog: MatDialog,
-              private http: HttpClient) {
+              private http: HttpClient,) {
 
     // Fetch authentication token from local storage
     const authToken = localStorage.getItem('jwtToken');
@@ -119,6 +132,9 @@ export class MyRoutesPageComponent {
         // Handle error appropriately (e.g., show a notification to the user)
       }
     );
+    this.store.select('auth').subscribe(res => {
+      this.account = res.account;
+    });
   }
 
   protected selectedRoutes: string[] = [];

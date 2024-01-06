@@ -29,7 +29,6 @@ export class MyAccountPageComponent {
 
   constructor(private store: Store<{ auth: { account: AccountType } }>) {
     this.store.select('auth').subscribe(res => {
-      console.log(res)
       this.account = res.account;
     });
   }

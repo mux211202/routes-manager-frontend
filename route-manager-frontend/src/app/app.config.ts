@@ -10,6 +10,7 @@ import {authReducer} from './store/auth-store/auth.reducer';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {SimpleNotificationsModule} from 'angular2-notifications';
 import {HttpClientModule} from "@angular/common/http";
+import {notificationReducer} from "./store/notification-store/notification.reducer";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideStore(),
     importProvidersFrom(
-      StoreModule.forRoot({routes: routesReducer, auth: authReducer}),
+      StoreModule.forRoot({routes: routesReducer, auth: authReducer, notification: notificationReducer}),
       StoreDevtoolsModule.instrument({
         name: 'NgRx Demo App',
       }),

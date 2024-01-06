@@ -6,10 +6,14 @@ import {PlaceDetailsCardComponent} from '../../components/place-details-card/pla
 import {MatButtonModule} from '@angular/material/button';
 import {Store} from '@ngrx/store';
 import {RouteType} from '../../store/routes-store/routes.reducer';
-import {addRoute} from '../../store/routes-store/routes.actions';
 import {createRouteKey} from '../../helpers/createRouteKey';
 import {MatTableModule} from '@angular/material/table';
 import {AddRoutePageService} from "./add-route-page-service";
+import {setNotification, unsetNotification} from "../../store/notification-store/notification.actions";
+import {AccountType} from "../../store/auth-store/auth.reducer";
+import {RouterLink, RouterLinkActive} from "@angular/router";
+
+export interface NotificationType { message: string, status: 'warn' | 'accent' };
 
 @Component({
   selector: 'app-add-route-page',
@@ -20,42 +24,57 @@ import {AddRoutePageService} from "./add-route-page-service";
     PlaceDetailsCardComponent,
     MapDisplayComponent,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    RouterLink,
+    RouterLinkActive
   ],
   template: `
-    <div class="container">
-      <div class="input-area">
-        <h2>Warehouse location: </h2>
-        <app-autocomplete (placeChanged)="fromValue = $event"></app-autocomplete>
-        <h2>Destination point: </h2>
-        <app-autocomplete (placeChanged)="toValue = $event"></app-autocomplete>
-        <button (click)="addRoute()" mat-raised-button color="primary">Add route</button>
-      </div>
-      @if (this.notification) {
-        <div>
-          <button mat-raised-button color={{this.notification.status}}>{{ this.notification.message }}</button>
+    @if (!account?.email) {
+      <main class="pleaseLogIn">
+        <h1>To use service, you need to log in</h1>
+        <a routerLink="/my-account" ariaCurrentWhenActive="page" routerLinkActive="active">LOG IN</a>
+      </main>
+    } @else {
+      <div class="container">
+        <div class="input-area">
+          <h2>Warehouse location: </h2>
+          <app-autocomplete (placeChanged)="fromValue = $event"></app-autocomplete>
+          <h2>Destination point: </h2>
+          <app-autocomplete (placeChanged)="toValue = $event"></app-autocomplete>
+          <button (click)="addRoute()" mat-raised-button color="primary">Add route</button>
         </div>
-      }
-      <div class="display-area">
-        <div>
-          <app-place-details-card [data]="fromValue"></app-place-details-card>
-          <app-place-details-card [data]="toValue"></app-place-details-card>
+        @if (this.notification) {
+          <div>
+            <button mat-raised-button color={{this.notification.status}}>{{ this.notification.message }}</button>
+          </div>
+        }
+        <div class="display-area">
+          <div>
+            <app-place-details-card [data]="fromValue"></app-place-details-card>
+            <app-place-details-card [data]="toValue"></app-place-details-card>
+          </div>
+          <app-map-display [from]="fromValue" [to]="toValue"></app-map-display>
         </div>
-        <app-map-display [from]="fromValue" [to]="toValue"></app-map-display>
       </div>
-    </div>
+    }
   `,
-  styleUrl: './add-route-page.component.scss'
+  styleUrls: ['../../app.component.scss', './add-route-page.component.scss'],
 })
+
 export class AddRoutePageComponent {
   fromValue: PlaceSearchResult | undefined;
   toValue: PlaceSearchResult | undefined;
-  notification: { message: string, status: 'warn' | 'accent' } | undefined;
+  notification: NotificationType | undefined;
   routes: RouteType[] | undefined;
+  account: AccountType | undefined;
 
-  constructor(private store: Store<{ routes: RouteType[] }>, private service: AddRoutePageService) {
-    this.store.select('routes').subscribe(res => {
-      this.routes = res;
+  constructor(private store: Store<{ notification: {notification: NotificationType}, auth: { account: AccountType } }>, private service: AddRoutePageService) {
+    this.store.select('notification').subscribe(res => {
+      this.notification = res.notification;
+    });
+
+    this.store.select('auth').subscribe(res => {
+      this.account = res.account;
     });
   }
 
@@ -63,26 +82,21 @@ export class AddRoutePageComponent {
     const {fromValue, toValue} = this;
 
     if (!fromValue?.address || !toValue?.address) {
-      this.notification = {message: 'Please select starting point and destination point!', status: 'warn'};
+      const notification: NotificationType = {message: 'Please select starting point and destination point!', status: 'warn'};
+      this.store.dispatch(setNotification(notification));
+      setTimeout(() => {
+        this.store.dispatch(unsetNotification());
+      }, 3000)
       return;
     }
 
     const route = createRouteKey({key: '', fromValue, toValue});
-    if (!!this.routes?.find(storeRoute => route.key === storeRoute.key)) {
-      this.notification = {message: 'This route already exists!', status: 'warn'};
-      return;
-    }
-
-    this.notification = undefined;
 
     if (fromValue.location && toValue.location) {
-      await this.service.addRoute(route)
-      // this.store.dispatch(addRoute({route}));
-      const message = 'This you have added the route!';
-      this.notification = {message, status: 'accent'};
+      this.service.addRoute(route);
+
       setTimeout(() => {
-        // checking if notification did not change
-        if (this.notification?.message === message) this.notification = undefined;
+        this.store.dispatch(unsetNotification());
       }, 3000)
     }
   }
